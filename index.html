@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>LazyBus demo</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<link rel="stylesheet" href="assets/leaflet.css" />
+	<!--[if lte IE 8]><link rel="stylesheet" href="assets/leaflet.ie.css" /><![endif]-->
+	<script src="assets/leaflet.js"></script>
+	<script src="assets/kml.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+	<style>
+		body {
+			padding: 0;
+			margin: 0;
+		}
+		html, body, #map {
+			height: 100%;
+		}
+    .busMarker {
+      opacity:0.9;
+      background: radial-gradient( 5px -9px, circle, white 8%, red 26px );
+      border: 2px solid white;
+      border-radius: 12px; /* one half of ( (border * 2) + height + padding ) */
+      box-shadow: 1px 1px 1px black;
+      color: white;
+      font: bold 12px/10px Helvetica, Verdana, Tahoma;
+      min-height: 10px;
+      min-width: 14px;
+      padding: 4px 3px 0 3px;
+      text-align: center;
+      background-color:black;
+    }
+    .bus99 {
+      background-color: #1111ff;
+      color:white;
+    }
+    .bus15 {
+      background-color: #ff1111;
+      color:white;
+    }
+	</style>
+</head>
+<body>
+	<div id="map"></div>
+
+	<script>
+		var map = L.map('map',{center: [49.2608,-123.114],
+      zoom: 13});
+
+		L.tileLayer('http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/997/256/{z}/{x}/{y}.png', {
+			maxZoom: 18,
+			attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>'
+		}).addTo(map);
+    
+    map.on('load', function(e) {
+        alert(e.latlng);
+    });
+
+
+    var markers = {}
+    var routeLayers = {}    
+    
+    // function removeOld() {
+    //   console.log("removing markers");
+    //   $.each(markers, function(i,item){
+    //     map.removeLayer(item);
+    //   });
+    //   $.each(routeLayers, function(i,item){
+    //     map.removeLayer(item);
+    //   });
+    // }
+
+    var dirGlyphs = {"NORTH": '↑', "SOUTH": '↓', "EAST": '→', "WEST": '←'};
+    
+    function updateRoute(routeNumber) {
+      $.getJSON("http://api.translink.ca/RTTIAPI/V1/buses?routeNo=0"+routeNumber+"&apiKey=RQpWX9tXIPRc1wmsyA0k",
+        function(data) {
+          console.log(data);
+          $.each(data, function(i,item){
+            var Icon = L.divIcon({html:routeNumber + dirGlyphs[item["Direction"]], className:'busMarker bus'+routeNumber, iconSize: new L.Point(24, 12) });
+            if(markers[item["VehicleNo"]]) {
+              markers[item["VehicleNo"]].setLatLng([item["Latitude"], item["Longitude"]]);
+              markers[item["VehicleNo"]].setIcon(Icon);
+            } else {
+              markers[item["VehicleNo"]] = L.marker([item["Latitude"], item["Longitude"]],{icon: Icon}).addTo(map);
+            }
+          });
+          var route = new L.KML("examples/0"+routeNumber+".kml", {async: true});
+          if(!routeLayers["0"+routeNumber]) {
+            routeLayers["0"+routeNumber] = map.addLayer(route);            
+          }
+        });
+    }
+    
+    function updateRoutes() {
+      console.log("updating routes");      
+      // for debugging, add all buses between 1 and 99
+      // for (var i=1;i<100;i++) {
+      //   updateRoute(i);
+      // }
+      updateRoute(15);
+      updateRoute(99);        
+    }
+    
+    $(document).ready(function() {
+      updateRoutes();
+      var updater = setInterval(updateRoutes, 4000);
+    });
+  
+		function onLocationFound(e) {
+			var radius = e.accuracy / 2;
+
+			L.marker(e.latlng).addTo(map)
+				.bindPopup("You are within " + radius + " meters from this point").openPopup();
+
+			L.circle(e.latlng, radius).addTo(map);
+		}
+
+		function onLocationError(e) {
+			alert(e.message);
+		}
+
+		map.on('locationfound', onLocationFound);
+		map.on('locationerror', onLocationError);
+
+    // leaflet call for geolocation
+    // map.locate({setView: true, maxZoom: 16});
+
+	</script>
+</body>
+</html>
