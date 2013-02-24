@@ -82,8 +82,9 @@
             if(markers[item["VehicleNo"]]) {
               markers[item["VehicleNo"]].setLatLng([item["Latitude"], item["Longitude"]]);
               markers[item["VehicleNo"]].setIcon(Icon);
+              markers[item["VehicleNo"]].bindPopup(item["Destination"]);
             } else {
-              markers[item["VehicleNo"]] = L.marker([item["Latitude"], item["Longitude"]],{icon: Icon}).addTo(map);
+              markers[item["VehicleNo"]] = L.marker([item["Latitude"], item["Longitude"]],{icon: Icon}).bindPopup(item["Destination"]).addTo(map);
             }
           });
           var route = new L.KML("examples/0"+routeNumber+".kml", {async: true});
