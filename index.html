@@ -79,10 +79,25 @@
           console.log(data);
           $.each(data, function(i,item){
             var Icon = L.divIcon({html:routeNumber + dirGlyphs[item["Direction"]], className:'busMarker bus'+routeNumber, iconSize: new L.Point(24, 12) });
-            if(markers[item["VehicleNo"]]) {
-              markers[item["VehicleNo"]].setLatLng([item["Latitude"], item["Longitude"]]);
-              markers[item["VehicleNo"]].setIcon(Icon);
-              markers[item["VehicleNo"]].bindPopup(item["Destination"]);
+            var vehicle = item["VehicleNo"]
+            if(markers[vehicle]) {
+              console.log("checking");
+              if(markers[vehicle].getLatLng().lng != item["Longitude"] || markers[vehicle].getLatLng().lat != item["Latitude"]) {
+                console.log("moved");
+                console.log(markers[vehicle].getLatLng())
+                // var markerAnimator = setInterval(function() {
+                //   var latStep = (markers[vehicle].getLatLng().lat - item["Latitude"])/10.0;
+                //   var lngStep = (markers[vehicle].getLatLng().lng - item["Longitude"])/10.0;
+                //   console.log(latStep);
+                //   console.log(lngStep);
+                //   markers[vehicle].setLatLng((markers[vehicle].getLatLng().lat+latStep), (markers[vehicle].getLatLng().lng+lngStep));
+                // if ((markers[vehicle].getLatLng().lat - item["Latitude"] < latStep) && (markers[vehicle].getLatLng().lng - item["Longitude"] < lngStep) ){ clearInterval(markerAnimator) }
+                // }, 50)
+
+                markers[vehicle].setLatLng([item["Latitude"], item["Longitude"]]);
+                markers[vehicle].setIcon(Icon);
+                markers[vehicle].bindPopup(item["Destination"]);
+              }
             } else {
               markers[item["VehicleNo"]] = L.marker([item["Latitude"], item["Longitude"]],{icon: Icon}).bindPopup(item["Destination"]).addTo(map);
             }
@@ -91,7 +106,7 @@
           if(!routeLayers["0"+routeNumber]) {
             routeLayers["0"+routeNumber] = map.addLayer(route);            
           }
-        });
+                  });
     }
     
     function updateRoutes() {
@@ -100,8 +115,11 @@
       // for (var i=1;i<100;i++) {
       //   updateRoute(i);
       // }
-      updateRoute(15);
-      updateRoute(99);        
+      updateRoute('03');
+      updateRoute('09');
+      updateRoute('19');
+      updateRoute('08');
+      updateRoute('99');        
     }
     
     $(document).ready(function() {
