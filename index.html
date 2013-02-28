@@ -8,6 +8,7 @@
 	<!--[if lte IE 8]><link rel="stylesheet" href="assets/leaflet.ie.css" /><![endif]-->
 	<script src="assets/leaflet.js"></script>
 	<script src="assets/kml.js"></script>
+  <script src="assets/AnimatedMarker.js"></script>
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 	<style>
 		body {
@@ -39,6 +40,10 @@
       background-color: #ff1111;
       color:white;
     }
+    .busxx {
+      background-color: #11ff11;
+      color:white;
+    }
 	</style>
 </head>
 <body>
@@ -59,6 +64,7 @@
 
 
     var markers = {}
+    var animatedMarkers = {}
     var routeLayers = {}    
     
     // function removeOld() {
@@ -79,27 +85,42 @@
           console.log(data);
           $.each(data, function(i,item){
             var Icon = L.divIcon({html:routeNumber + dirGlyphs[item["Direction"]], className:'busMarker bus'+routeNumber, iconSize: new L.Point(24, 12) });
+            // different color icon for debugging anumation
+            // var Icon2 = L.divIcon({html:routeNumber + dirGlyphs[item["Direction"]], className:'busMarker busxx', iconSize: new L.Point(24, 12) });
             var vehicle = item["VehicleNo"]
             if(markers[vehicle]) {
               console.log("checking");
-              if(markers[vehicle].getLatLng().lng != item["Longitude"] || markers[vehicle].getLatLng().lat != item["Latitude"]) {
+              if((markers[vehicle].getLatLng().lng != item["Longitude"] || markers[vehicle].getLatLng().lat != item["Latitude"]) && !animatedMarkers[vehicle]) {
                 console.log("moved");
-                console.log(markers[vehicle].getLatLng())
-                // var markerAnimator = setInterval(function() {
-                //   var latStep = (markers[vehicle].getLatLng().lat - item["Latitude"])/10.0;
-                //   var lngStep = (markers[vehicle].getLatLng().lng - item["Longitude"])/10.0;
-                //   console.log(latStep);
-                //   console.log(lngStep);
-                //   markers[vehicle].setLatLng((markers[vehicle].getLatLng().lat+latStep), (markers[vehicle].getLatLng().lng+lngStep));
-                // if ((markers[vehicle].getLatLng().lat - item["Latitude"] < latStep) && (markers[vehicle].getLatLng().lng - item["Longitude"] < lngStep) ){ clearInterval(markerAnimator) }
-                // }, 50)
+                console.log(markers[vehicle].getLatLng());
 
-                markers[vehicle].setLatLng([item["Latitude"], item["Longitude"]]);
-                markers[vehicle].setIcon(Icon);
-                markers[vehicle].bindPopup(item["Destination"]);
+                // have to create a splice because animator expects polyline to have 3 points or more right now
+                latSplice = (markers[vehicle].getLatLng().lat - item["Latitude"] ) / 2
+                lngSplice = (markers[vehicle].getLatLng().lng - item["Longitude"]) / 2
+                var line = L.polyline([[markers[vehicle].getLatLng().lat,markers[vehicle].getLatLng().lng],
+                                       [markers[vehicle].getLatLng().lat+latSplice,markers[vehicle].getLatLng().lng+lngSplice],
+                                       [item["Latitude"],item["Longitude"]],[item["Latitude"],item["Longitude"]]], {color:'red'});
+
+                animatedMarkers[vehicle] = L.animatedMarker(line.getLatLngs(), {
+                  icon: Icon,
+                  // m intervals for animation
+                  distance: 300,
+                  // interval: 2000,
+                  onEnd: function() {
+                    markers[vehicle].setLatLng([item["Latitude"], item["Longitude"]]);
+                    markers[vehicle].setIcon(Icon);
+                    markers[vehicle].bindPopup(item["Destination"]+' '+vehicle);
+                    console.log("removing animation");
+                    markers[vehicle].setOpacity(1);
+                    map.removeLayer(this);
+                  }
+                });
+                markers[vehicle].setOpacity(0);
+                animatedMarkers[vehicle].bindPopup(markers[vehicle].getLatLng());
+                map.addLayer(animatedMarkers[vehicle]);
               }
-            } else {
-              markers[item["VehicleNo"]] = L.marker([item["Latitude"], item["Longitude"]],{icon: Icon}).bindPopup(item["Destination"]).addTo(map);
+            } else if(!animatedMarkers[vehicle]) {
+              markers[item["VehicleNo"]] = L.marker([item["Latitude"], item["Longitude"]],{icon: Icon}).bindPopup(item["Destination"]+' '+vehicle).addTo(map);
             }
           });
           var route = new L.KML("examples/0"+routeNumber+".kml", {async: true});
@@ -112,14 +133,14 @@
     function updateRoutes() {
       console.log("updating routes");      
       // for debugging, add all buses between 1 and 99
-      // for (var i=1;i<100;i++) {
-      //   updateRoute(i);
-      // }
-      updateRoute('03');
-      updateRoute('09');
-      updateRoute('19');
-      updateRoute('08');
-      updateRoute('99');        
+      for (var i=1;i<100;i++) {
+        updateRoute(i);
+      }
+      // updateRoute('03');
+      // updateRoute('09');
+      // updateRoute('19');
+      // updateRoute('08');
+      // updateRoute('99');        
     }
     
     $(document).ready(function() {
