@@ -1,0 +1,130 @@
+//  curl -i -H "Accept: application/json" -X GET "http://api.translink.ca/RTTIAPI/V1/buses?routeNo=099&apiKey=RQpWX9tXIPRc1wmsyA0k"
+
+[
+    {
+        "Destination": "TO BOUNDARY B-LINE", 
+        "Direction": "EAST", 
+        "Latitude": 49.263817, 
+        "Longitude": -123.20825, 
+        "Pattern": "EB3", 
+        "RecordedTime": "08:53:03 pm", 
+        "RouteMap": {
+            "Href": "http://nb.translink.ca/geodata/099.kmz"
+        }, 
+        "RouteNo": "099", 
+        "TripId": 5204952, 
+        "VehicleNo": "8042"
+    }, 
+    {
+        "Destination": "TO BOUNDARY B-LINE", 
+        "Direction": "EAST", 
+        "Latitude": 49.263567, 
+        "Longitude": -123.137133, 
+        "Pattern": "EB3", 
+        "RecordedTime": "08:52:28 pm", 
+        "RouteMap": {
+            "Href": "http://nb.translink.ca/geodata/099.kmz"
+        }, 
+        "RouteNo": "099", 
+        "TripId": 5204759, 
+        "VehicleNo": "8044"
+    }, 
+    {
+        "Destination": "UBC B-LINE", 
+        "Direction": "WEST", 
+        "Latitude": 49.264233, 
+        "Longitude": -123.177783, 
+        "Pattern": "WB1", 
+        "RecordedTime": "08:53:28 pm", 
+        "RouteMap": {
+            "Href": "http://nb.translink.ca/geodata/099.kmz"
+        }, 
+        "RouteNo": "099", 
+        "TripId": 5205164, 
+        "VehicleNo": "8090"
+    }, 
+    {
+        "Destination": "COMM'L-BDWAY STN", 
+        "Direction": "EAST", 
+        "Latitude": 49.2638, 
+        "Longitude": -123.151883, 
+        "Pattern": "EB1", 
+        "RecordedTime": "08:53:51 pm", 
+        "RouteMap": {
+            "Href": "http://nb.translink.ca/geodata/099.kmz"
+        }, 
+        "RouteNo": "099", 
+        "TripId": 5204827, 
+        "VehicleNo": "8116"
+    }, 
+    {
+        "Destination": "COMM'L-BDWAY STN", 
+        "Direction": "EAST", 
+        "Latitude": 49.26855, 
+        "Longitude": -123.2483, 
+        "Pattern": "EB1", 
+        "RecordedTime": "08:51:39 pm", 
+        "RouteMap": {
+            "Href": "http://nb.translink.ca/geodata/099.kmz"
+        }, 
+        "RouteNo": "099", 
+        "TripId": 5204828, 
+        "VehicleNo": "8124"
+    }, 
+    {
+        "Destination": "UBC B-LINE", 
+        "Direction": "WEST", 
+        "Latitude": 49.26385, 
+        "Longitude": -123.21, 
+        "Pattern": "WB1", 
+        "RecordedTime": "08:53:03 pm", 
+        "RouteMap": {
+            "Href": "http://nb.translink.ca/geodata/099.kmz"
+        }, 
+        "RouteNo": "099", 
+        "TripId": 5205163, 
+        "VehicleNo": "8145"
+    }, 
+    {
+        "Destination": "COMM'L-BDWAY STN", 
+        "Direction": "EAST", 
+        "Latitude": 49.262383, 
+        "Longitude": -123.075983, 
+        "Pattern": "EB1", 
+        "RecordedTime": "08:53:47 pm", 
+        "RouteMap": {
+            "Href": "http://nb.translink.ca/geodata/099.kmz"
+        }, 
+        "RouteNo": "099", 
+        "TripId": 5204947, 
+        "VehicleNo": "8149"
+    }, 
+    {
+        "Destination": "UBC B-LINE", 
+        "Direction": "WEST", 
+        "Latitude": 49.263417, 
+        "Longitude": -123.069, 
+        "Pattern": "WB1", 
+        "RecordedTime": "08:52:56 pm", 
+        "RouteMap": {
+            "Href": "http://nb.translink.ca/geodata/099.kmz"
+        }, 
+        "RouteNo": "099", 
+        "TripId": 5205167, 
+        "VehicleNo": "8152"
+    }, 
+    {
+        "Destination": "UBC B-LINE", 
+        "Direction": "WEST", 
+        "Latitude": 49.262317, 
+        "Longitude": -123.068767, 
+        "Pattern": "WB1", 
+        "RecordedTime": "08:53:30 pm", 
+        "RouteMap": {
+            "Href": "http://nb.translink.ca/geodata/099.kmz"
+        }, 
+        "RouteNo": "099", 
+        "TripId": 5205166, 
+        "VehicleNo": "8153"
+    }
+]
